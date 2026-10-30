@@ -1,236 +1,521 @@
-import numpy as np
+"""
+main.py - Multi-Utility Toolkit Main Entry Point
 
-class DataAnalytics:
-    def __init__(self, data=None):
-        # Array initialize karne ke liye constructor
-        if data is not None:
-            self.__array = np.array(data)  # Encapsulation / Private attribute
-        else:
-            self.__array = None
+A menu-driven console application that integrates multiple standard modules,
+custom modules, and packages to perform a variety of tasks.
 
-    # Array get karne ke liye getter method
-    def get_array(self):
-        return self.__array
+Modules Used:
+    - datetime: Date and time operations
+    - time: Stopwatch and countdown timer
+    - math: Mathematical computations
+    - random: Random data generation
+    - uuid: Unique identifier generation
+    - toolkit_package.file_operations: Custom file handling
+    - toolkit_package.math_utilities: Custom math utilities
 
-    # Array set karne ke liye setter method
-    def set_array(self, arr):
-        self.__array = np.array(arr)
+Author: [Your Name]
+Date: [Current Date]
+"""
 
-    # 1. Array Creation (Static method utility ke roop me)[cite: 1, 2]
-    @staticmethod
-    def create_array(dim, shape, elements):
-        arr = np.array(elements)
-        return arr.reshape(shape)
+import sys
+import time
+import math
+import random
+import uuid
+import string
+from datetime import datetime, timedelta
 
-    # 2. Indexing aur Slicing[cite: 1, 3]
-    def index_element(self, indices):
-        return self.__array[tuple(indices)]
-
-    def slice_array(self, row_slice=None, col_slice=None):
-        if self.__array.ndim == 1:
-            return self.__array[row_slice]
-        return self.__array[row_slice, col_slice]
-
-    # 3. Mathematical Operations[cite: 1, 3]
-    def add(self, other_arr):
-        return self.__array + other_arr
-
-    def subtract(self, other_arr):
-        return self.__array - other_arr
-
-    def multiply(self, other_arr):
-        return self.__array * other_arr
-
-    def divide(self, other_arr):
-        return self.__array / other_arr
-
-    def matrix_multiply(self, other_arr):
-        return np.dot(self.__array, other_arr)
-
-    # 4. Combining aur Splitting[cite: 1]
-    def combine(self, other_arr, axis=0):
-        return np.concatenate((self.__array, other_arr), axis=axis)
-
-    def split(self, num_splits, axis=0):
-        return np.array_split(self.__array, num_splits, axis=axis)
-
-    # 5. Search, Sort, aur Filter[cite: 1]
-    def search(self, value):
-        return np.where(self.__array == value)
-
-    def sort_array(self, ascending=True):
-        sorted_arr = np.sort(self.__array, axis=None)
-        if not ascending:
-            sorted_arr = sorted_arr[::-1]
-        return sorted_arr
-
-    def filter_greater_than(self, threshold):
-        return self.__array[self.__array > threshold]
-
-    # 6. Aggregating aur Statistical Functions[cite: 1, 2]
-    def calculate_stats(self):
-        stats = {
-            "Sum": np.sum(self.__array),
-            "Mean": np.mean(self.__array),
-            "Median": np.median(self.__array),
-            "Std Dev": np.std(self.__array),
-            "Variance": np.var(self.__array),
-            "Min": np.min(self.__array),
-            "Max": np.max(self.__array)
-        }
-        return stats
-
-    def calculate_percentile(self, q):
-        return np.percentile(self.__array, q)
-
-    # Class-level method example
-    @classmethod
-    def info(cls):
-        return "DataAnalytics Class for NumPy Data Analysis."
+from toolkit_package import file_operations
+from toolkit_package import math_utilities
 
 
-# --- Menu-driven UI Execution ---[cite: 2]
-def main():
-    analyzer = DataAnalytics()
+# ============================================================
+# Datetime and Time Operations
+# ============================================================
 
+def display_current_datetime():
+    """Display current date and time in a user-friendly format."""
+    now = datetime.now()
+    print(f"\nCurrent Date and Time: {now.strftime('%Y-%m-%d %H:%M:%S')}")
+    print(f"Formatted: {now.strftime('%A, %B %d, %Y at %I:%M %p')}")
+
+
+def calculate_date_difference():
+    """Calculate the difference between two dates."""
+    try:
+        date1_str = input("Enter the first date (YYYY-MM-DD): ").strip()
+        date2_str = input("Enter the second date (YYYY-MM-DD): ").strip()
+        date1 = datetime.strptime(date1_str, "%Y-%m-%d")
+        date2 = datetime.strptime(date2_str, "%Y-%m-%d")
+        difference = abs((date2 - date1).days)
+        print(f"Difference: {difference} days")
+    except ValueError:
+        print("Error: Invalid date format. Please use YYYY-MM-DD.")
+
+
+def format_custom_date():
+    """Format a date into a custom format."""
+    try:
+        date_str = input("Enter a date (YYYY-MM-DD): ").strip()
+        date_obj = datetime.strptime(date_str, "%Y-%m-%d")
+        print("\nCustom Formats:")
+        print(f"  ISO Format:        {date_obj.strftime('%Y-%m-%d')}")
+        print(f"  Long Format:       {date_obj.strftime('%B %d, %Y')}")
+        print(f"  Short Format:      {date_obj.strftime('%d/%m/%Y')}")
+        print(f"  Day of Week:       {date_obj.strftime('%A')}")
+        print(f"  Time-less:         {date_obj.strftime('%d-%b-%Y')}")
+    except ValueError:
+        print("Error: Invalid date format. Please use YYYY-MM-DD.")
+
+
+def stopwatch():
+    """A simple stopwatch using the time module."""
+    print("\nStopwatch started. Press Enter to stop...")
+    start_time = time.time()
+    input()
+    end_time = time.time()
+    elapsed = end_time - start_time
+    print(f"Elapsed time: {elapsed:.2f} seconds")
+
+
+def countdown_timer():
+    """A simple countdown timer."""
+    try:
+        seconds = int(input("Enter countdown time in seconds: ").strip())
+        if seconds <= 0:
+            print("Error: Please enter a positive number.")
+            return
+        print(f"\nCountdown started for {seconds} seconds...")
+        for i in range(seconds, 0, -1):
+            print(f"  {i} seconds remaining...", end="\r")
+            time.sleep(1)
+        print("\nTime's up!")
+    except ValueError:
+        print("Error: Please enter a valid integer.")
+
+
+def datetime_menu():
+    """Sub-menu for datetime and time operations."""
     while True:
-        print("\nWelcome to the NumPy Analyzer!")
-        print("====================================")
-        print("Choose an option:")
-        print("1. Create a Numpy Array")
-        print("2. Perform Mathematical Operations")
-        print("3. Combine or Split Arrays")
-        print("4. Search, Sort, or Filter Arrays")
-        print("5. Compute Aggregates and Statistics")
-        print("6. Exit")
-        print("====================================")
-
-        choice = input("Enter your choice: ")
+        print("\n--- Datetime and Time Operations ---")
+        print("1. Display current date and time")
+        print("2. Calculate difference between two dates")
+        print("3. Format date into custom format")
+        print("4. Stopwatch")
+        print("5. Countdown Timer")
+        print("6. Back to Main Menu")
+        choice = input("Enter your choice: ").strip()
 
         if choice == '1':
-            print("\nSelect the type of array to create:")
-            print("1. 1D Array\n2. 2D Array\n3. 3D Array")
-            arr_type = input("Enter your choice: ")
-
-            if arr_type == '1':
-                n = int(input("Enter number of elements: "))
-                elems = list(map(float, input(f"Enter {n} elements separated by space: ").split()))
-                analyzer.set_array(DataAnalytics.create_array(1, (n,), elems))
-
-            elif arr_type == '2':
-                r = int(input("Enter the number of rows: "))
-                c = int(input("Enter the number of columns: "))
-                elems = list(map(float, input(f"Enter {r*c} elements separated by space: ").split()))
-                analyzer.set_array(DataAnalytics.create_array(2, (r, c), elems))
-
-            elif arr_type == '3':
-                d1 = int(input("Enter depth: "))
-                d2 = int(input("Enter rows: "))
-                d3 = int(input("Enter columns: "))
-                elems = list(map(float, input(f"Enter {d1*d2*d3} elements separated by space: ").split()))
-                analyzer.set_array(DataAnalytics.create_array(3, (d1, d2, d3), elems))
-
-            print("\nArray created successfully:")
-            print(analyzer.get_array())
-
-            # Indexing / Slicing sub-menu[cite: 3]
-            print("\nChoose an operation:")
-            print("1. Indexing\n2. Slicing\n3. Go Back")
-            sub_op = input("Enter your choice: ")
-            
-            if sub_op == '1':
-                idx = list(map(int, input("Enter index separated by space: ").split()))
-                print("Element:", analyzer.index_element(idx))
-            elif sub_op == '2':
-                if analyzer.get_array().ndim == 2:
-                    r_str = input("Enter the row range (start:end): ").split(":")
-                    c_str = input("Enter the column range (start:end): ").split(":")
-                    r_slice = slice(int(r_str[0]), int(r_str[1]))
-                    c_slice = slice(int(c_str[0]), int(c_str[1]))
-                    print("\nSliced Array:\n", analyzer.slice_array(r_slice, c_slice))
-
+            display_current_datetime()
         elif choice == '2':
-            if analyzer.get_array() is None:
-                print("Pehle Array create karein (Option 1).")
-                continue
-
-            curr_arr = analyzer.get_array()
-            print("\nChoose a mathematical operation:")
-            print("1. Addition\n2. Subtraction\n3. Multiplication\n4. Division\n5. Matrix Multiplication")
-            math_choice = input("Enter your choice: ")
-
-            size = curr_arr.size
-            elems = list(map(float, input(f"Enter the same-size array elements ({size} elements separated by space): ").split()))
-            second_arr = np.array(elems).reshape(curr_arr.shape)
-
-            print("\nOriginal Array:\n", curr_arr)
-            print("Second Array:\n", second_arr)
-
-            if math_choice == '1':
-                print("\nResult of Addition:\n", analyzer.add(second_arr))
-            elif math_choice == '2':
-                print("\nResult of Subtraction:\n", analyzer.subtract(second_arr))
-            elif math_choice == '3':
-                print("\nResult of Multiplication:\n", analyzer.multiply(second_arr))
-            elif math_choice == '4':
-                print("\nResult of Division:\n", analyzer.divide(second_arr))
-            elif math_choice == '5':
-                if curr_arr.ndim == 2 and curr_arr.shape[1] == second_arr.shape[0]:
-                    print("\nResult of Matrix Multiplication:\n", analyzer.matrix_multiply(second_arr))
-                else:
-                    print("Matrix dimensions match nahi ho rahe multiplication ke liye.")
-
+            calculate_date_difference()
         elif choice == '3':
-            if analyzer.get_array() is None:
-                print("Pehle Array create karein.")
-                continue
-
-            print("\n1. Combine Arrays\n2. Split Array")
-            cs_choice = input("Enter choice: ")
-            if cs_choice == '1':
-                size = analyzer.get_array().size
-                elems = list(map(float, input(f"Enter array elements to combine (size {size}): ").split()))
-                other = np.array(elems).reshape(analyzer.get_array().shape)
-                print("\nCombined Array:\n", analyzer.combine(other, axis=0))
-            elif cs_choice == '2':
-                parts = int(input("Kitne parts me split karna hai: "))
-                print("\nSplit result:\n", analyzer.split(parts))
-
+            format_custom_date()
         elif choice == '4':
-            if analyzer.get_array() is None:
-                print("Pehle Array create karein.")
-                continue
-
-            print("\n1. Search\n2. Sort\n3. Filter")
-            sf_choice = input("Enter choice: ")
-            if sf_choice == '1':
-                val = float(input("Enter value to search: "))
-                res = analyzer.search(val)
-                print("Indices jahan element mila:", res)
-            elif sf_choice == '2':
-                print("Ascending Sort:", analyzer.sort_array(ascending=True))
-                print("Descending Sort:", analyzer.sort_array(ascending=False))
-            elif sf_choice == '3':
-                cond = float(input("Elements greater than: "))
-                print(f"Filtered (elements > {cond}):", analyzer.filter_greater_than(cond))
-
+            stopwatch()
         elif choice == '5':
-            if analyzer.get_array() is None:
-                print("Pehle Array create karein.")
-                continue
-
-            print("\nOriginal Array:\n", analyzer.get_array())
-            stats = analyzer.calculate_stats()
-            for k, v in stats.items():
-                print(f"{k}: {v}")
-
+            countdown_timer()
         elif choice == '6':
-            print("\nThank you for using the NumPy Analyzer!")
-            print(".................Goodbye!...........................................")
             break
-
         else:
-            print("Invalid choice, dubara try karein.")
+            print("Invalid option. Please try again.")
 
+
+# ============================================================
+# Mathematical Operations
+# ============================================================
+
+def calculate_factorial():
+    """Calculate factorial of a number."""
+    try:
+        num = int(input("Enter a number: ").strip())
+        result = math_utilities.factorial(num)
+        print(f"Factorial: {result}")
+    except ValueError as e:
+        print(f"Error: {e}")
+
+
+def solve_compound_interest():
+    """Solve compound interest."""
+    try:
+        principal = float(input("Enter principal amount: ").strip())
+        rate = float(input("Enter rate of interest (in %): ").strip())
+        time_years = float(input("Enter time (in years): ").strip())
+        amount, interest = math_utilities.compound_interest(principal, rate, time_years)
+        print(f"Compound Interest: {amount:.2f}")
+        print(f"Interest Earned: {interest:.2f}")
+    except ValueError:
+        print("Error: Please enter valid numeric values.")
+
+
+def trigonometric_calculations():
+    """Perform trigonometric calculations."""
+    try:
+        angle = float(input("Enter angle in degrees: ").strip())
+        radians = math.radians(angle)
+        print(f"\nTrigonometric values for {angle}°:")
+        print(f"  sin: {math.sin(radians):.4f}")
+        print(f"  cos: {math.cos(radians):.4f}")
+        print(f"  tan: {math.tan(radians):.4f}")
+    except ValueError:
+        print("Error: Please enter a valid number.")
+
+
+def area_of_shapes():
+    """Calculate area of geometric shapes."""
+    print("\n--- Area of Geometric Shapes ---")
+    print("1. Circle")
+    print("2. Rectangle")
+    print("3. Triangle")
+    print("4. Square")
+    choice = input("Enter your choice: ").strip()
+
+    try:
+        if choice == '1':
+            radius = float(input("Enter radius: ").strip())
+            print(f"Area of Circle: {math_utilities.area_circle(radius)}")
+        elif choice == '2':
+            length = float(input("Enter length: ").strip())
+            width = float(input("Enter width: ").strip())
+            print(f"Area of Rectangle: {math_utilities.area_rectangle(length, width)}")
+        elif choice == '3':
+            base = float(input("Enter base: ").strip())
+            height = float(input("Enter height: ").strip())
+            print(f"Area of Triangle: {math_utilities.area_triangle(base, height)}")
+        elif choice == '4':
+            side = float(input("Enter side: ").strip())
+            print(f"Area of Square: {math_utilities.area_square(side)}")
+        else:
+            print("Invalid shape choice.")
+    except ValueError:
+        print("Error: Please enter valid numeric values.")
+
+
+def math_menu():
+    """Sub-menu for mathematical operations."""
+    while True:
+        print("\n--- Mathematical Operations ---")
+        print("1. Calculate Factorial")
+        print("2. Solve Compound Interest")
+        print("3. Trigonometric Calculations")
+        print("4. Area of Geometric Shapes")
+        print("5. Unit Conversions")
+        print("6. Back to Main Menu")
+        choice = input("Enter your choice: ").strip()
+
+        if choice == '1':
+            calculate_factorial()
+        elif choice == '2':
+            solve_compound_interest()
+        elif choice == '3':
+            trigonometric_calculations()
+        elif choice == '4':
+            area_of_shapes()
+        elif choice == '5':
+            unit_conversions()
+        elif choice == '6':
+            break
+        else:
+            print("Invalid option. Please try again.")
+
+
+def unit_conversions():
+    """Perform unit conversions."""
+    print("\n--- Unit Conversions ---")
+    print("1. Celsius to Fahrenheit")
+    print("2. Fahrenheit to Celsius")
+    print("3. Kilometers to Miles")
+    print("4. Miles to Kilometers")
+    print("5. Kilograms to Pounds")
+    print("6. Pounds to Kilograms")
+    choice = input("Enter your choice: ").strip()
+
+    try:
+        if choice == '1':
+            c = float(input("Enter temperature in Celsius: ").strip())
+            print(f"{c}°C = {math_utilities.celsius_to_fahrenheit(c):.2f}°F")
+        elif choice == '2':
+            f = float(input("Enter temperature in Fahrenheit: ").strip())
+            print(f"{f}°F = {math_utilities.fahrenheit_to_celsius(f):.2f}°C")
+        elif choice == '3':
+            km = float(input("Enter distance in kilometers: ").strip())
+            print(f"{km} km = {math_utilities.km_to_miles(km):.2f} miles")
+        elif choice == '4':
+            miles = float(input("Enter distance in miles: ").strip())
+            print(f"{miles} miles = {math_utilities.miles_to_km(miles):.2f} km")
+        elif choice == '5':
+            kg = float(input("Enter weight in kilograms: ").strip())
+            print(f"{kg} kg = {math_utilities.kg_to_pounds(kg):.2f} pounds")
+        elif choice == '6':
+            pounds = float(input("Enter weight in pounds: ").strip())
+            print(f"{pounds} pounds = {math_utilities.pounds_to_kg(pounds):.2f} kg")
+        else:
+            print("Invalid conversion choice.")
+    except ValueError:
+        print("Error: Please enter valid numeric values.")
+
+
+# ============================================================
+# Random Data Generation
+# ============================================================
+
+def generate_random_number():
+    """Generate a random number within a range."""
+    try:
+        low = int(input("Enter lower bound: ").strip())
+        high = int(input("Enter upper bound: ").strip())
+        if low > high:
+            print("Error: Lower bound must be less than or equal to upper bound.")
+            return
+        print(f"Random Number: {random.randint(low, high)}")
+    except ValueError:
+        print("Error: Please enter valid integers.")
+
+
+def generate_random_list():
+    """Generate a random list of numbers."""
+    try:
+        size = int(input("Enter list size: ").strip())
+        low = int(input("Enter lower bound: ").strip())
+        high = int(input("Enter upper bound: ").strip())
+        random_list = [random.randint(low, high) for _ in range(size)]
+        print(f"Random List: {random_list}")
+    except ValueError:
+        print("Error: Please enter valid integers.")
+
+
+def create_random_password():
+    """Create a random password."""
+    try:
+        length = int(input("Enter password length: ").strip())
+        if length < 4:
+            print("Error: Password length should be at least 4.")
+            return
+        characters = string.ascii_letters + string.digits + "!@#$%^&*"
+        password = ''.join(random.choice(characters) for _ in range(length))
+        print(f"Generated Password: {password}")
+    except ValueError:
+        print("Error: Please enter a valid integer.")
+
+
+def generate_otp():
+    """Generate a random OTP."""
+    otp = ''.join(str(random.randint(0, 9)) for _ in range(6))
+    print(f"Generated OTP: {otp}")
+
+
+def random_sampling():
+    """Simulate random sampling from a dataset."""
+    dataset = ["Alice", "Bob", "Charlie", "Diana", "Eve", "Frank", "Grace", "Henry"]
+    print(f"\nDataset: {dataset}")
+    try:
+        sample_size = int(input("Enter sample size: ").strip())
+        if sample_size > len(dataset):
+            print("Error: Sample size exceeds dataset size.")
+            return
+        sample = random.sample(dataset, sample_size)
+        print(f"Random Sample: {sample}")
+    except ValueError:
+        print("Error: Please enter a valid integer.")
+
+
+def random_menu():
+    """Sub-menu for random data generation."""
+    while True:
+        print("\n--- Random Data Generation ---")
+        print("1. Generate Random Number")
+        print("2. Generate Random List")
+        print("3. Create Random Password")
+        print("4. Generate Random OTP")
+        print("5. Random Sampling from Dataset")
+        print("6. Back to Main Menu")
+        choice = input("Enter your choice: ").strip()
+
+        if choice == '1':
+            generate_random_number()
+        elif choice == '2':
+            generate_random_list()
+        elif choice == '3':
+            create_random_password()
+        elif choice == '4':
+            generate_otp()
+        elif choice == '5':
+            random_sampling()
+        elif choice == '6':
+            break
+        else:
+            print("Invalid option. Please try again.")
+
+
+# ============================================================
+# UUID Generation
+# ============================================================
+
+def generate_uuid():
+    """Generate a unique identifier using uuid4()."""
+    unique_id = uuid.uuid4()
+    print(f"\nGenerated UUID: {unique_id}")
+    print(f"UUID Version: {unique_id.version}")
+    print(f"UUID String:  {str(unique_id)}")
+
+
+def generate_multiple_uuids():
+    """Generate multiple UUIDs for different purposes."""
+    print("\nGenerating UUIDs for different purposes:")
+    print(f"  File ID:    {uuid.uuid4()}")
+    print(f"  Record ID:  {uuid.uuid4()}")
+    print(f"  Session ID: {uuid.uuid4()}")
+
+
+def uuid_menu():
+    """Sub-menu for UUID operations."""
+    while True:
+        print("\n--- Generate Unique Identifiers (UUID) ---")
+        print("1. Generate a single UUID")
+        print("2. Generate multiple UUIDs")
+        print("3. Back to Main Menu")
+        choice = input("Enter your choice: ").strip()
+
+        if choice == '1':
+            generate_uuid()
+        elif choice == '2':
+            generate_multiple_uuids()
+        elif choice == '3':
+            break
+        else:
+            print("Invalid option. Please try again.")
+
+
+# ============================================================
+# File Operations (Custom Module)
+# ============================================================
+
+def file_operations_menu():
+    """Sub-menu for file operations using the custom module."""
+    while True:
+        print("\n--- File Operations ---")
+        print("1. Create a new file")
+        print("2. Write to a file")
+        print("3. Read from a file")
+        print("4. Append to a file")
+        print("5. Delete a file")
+        print("6. Back to Main Menu")
+        choice = input("Enter your choice: ").strip()
+
+        if choice == '1':
+            filename = input("Enter file name: ").strip()
+            print(file_operations.create_file(filename))
+        elif choice == '2':
+            filename = input("Enter file name: ").strip()
+            data = input("Enter data to write: ").strip()
+            print(file_operations.write_to_file(filename, data))
+        elif choice == '3':
+            filename = input("Enter file name: ").strip()
+            print("\nFile Content:")
+            print(file_operations.read_from_file(filename))
+        elif choice == '4':
+            filename = input("Enter file name: ").strip()
+            data = input("Enter data to append: ").strip()
+            print(file_operations.append_to_file(filename, data))
+        elif choice == '5':
+            filename = input("Enter file name: ").strip()
+            confirm = input(f"Delete '{filename}'? (yes/no): ").strip().lower()
+            if confirm == 'yes':
+                print(file_operations.delete_file(filename))
+            else:
+                print("Deletion cancelled.")
+        elif choice == '6':
+            break
+        else:
+            print("Invalid option. Please try again.")
+
+
+# ============================================================
+# Dynamic Module Exploration (dir())
+# ============================================================
+
+def explore_module_attributes():
+    """Explore attributes of a module using dir()."""
+    print("\n--- Explore Module Attributes (dir()) ---")
+    print("Available modules to explore:")
+    print("  Built-in: math, random, datetime, time, uuid, string, sys, os")
+    print("  Custom:   toolkit_package.file_operations, toolkit_package.math_utilities")
+    module_name = input("Enter module name to explore: ").strip()
+
+    try:
+        # Dynamically import the module
+        if module_name.startswith("toolkit_package"):
+            parts = module_name.split(".")
+            module = __import__(module_name, fromlist=[''])
+        else:
+            module = __import__(module_name)
+
+        attributes = dir(module)
+        print(f"\nAvailable Attributes in {module_name} module:")
+        print(attributes)
+        print(f"\nTotal attributes: {len(attributes)}")
+
+    except ImportError:
+        print(f"Error: Module '{module_name}' not found.")
+    except Exception as e:
+        print(f"An unexpected error occurred: {e}")
+
+
+# ============================================================
+# Main Menu
+# ============================================================
+
+def display_main_menu():
+    """Display the main menu."""
+    print("\n" + "=" * 55)
+    print("       Welcome to Multi-Utility Toolkit")
+    print("=" * 55)
+    print("Choose an option:")
+    print("1. Datetime and Time Operations")
+    print("2. Mathematical Operations")
+    print("3. Random Data Generation")
+    print("4. Generate Unique Identifiers (UUID)")
+    print("5. File Operations (Custom Module)")
+    print("6. Explore Module Attributes (dir())")
+    print("7. Exit")
+    print("=" * 55)
+
+
+def main():
+    """Main program loop."""
+    print("=" * 60)
+    print("Welcome to the Multi-Utility Toolkit!")
+    print("=" * 60)
+    print("This toolkit demonstrates Python's modular structure using")
+    print("built-in modules, custom modules, and packages.\n")
+
+    while True:
+        display_main_menu()
+        choice = input("Enter your choice: ").strip()
+
+        if choice == '1':
+            datetime_menu()
+        elif choice == '2':
+            math_menu()
+        elif choice == '3':
+            random_menu()
+        elif choice == '4':
+            uuid_menu()
+        elif choice == '5':
+            file_operations_menu()
+        elif choice == '6':
+            explore_module_attributes()
+        elif choice == '7':
+            print("\nThank you for using the Multi-Utility Toolkit! Goodbye!")
+            break
+        else:
+            print("Invalid option. Please select a valid option from the menu.")
+
+        input("\nPress Enter to continue...")
+
+
+# The __name__ == "__main__" paradigm ensures main() runs only
+# when this script is executed directly, not when imported.
 if __name__ == "__main__":
     main()
